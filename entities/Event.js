@@ -1,3 +1,10 @@
+const dayjs = require('dayjs');
+
+const validateDatetime = (datetime) => {
+  const datetimeRegex = /\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(?:.\d{7})?[+|-](0[0-9]|1[0-2]):(00|15|30|45)/;
+  return datetimeRegex.test(datetime);
+};
+
 class Event {
   setId(id) {
     this._id = id;
@@ -14,45 +21,68 @@ class Event {
     return this;
   }
 
+  // Validate address:
   setAddress(address) {
+    if (address.length < 3 || address.length > 60) {
+      throw new Error(
+        'Address must have at least 3 characters and a maximum of 60 characters'
+      );
+    }
     this._address = address;
     return this;
   }
 
+  // validate regular expression
   setLngLat(lngLat) {
+    const lngLatRegex = /\-?[0-9]+[\.]{0,1}[0-9]*/;
+    if (!lngLatRegex.test(lngLat)) {
+      throw new Error('Invalid longtitude and lattitude!');
+    }
     this._lngLat = lngLat;
     return this;
   }
 
   setStartTime(startTime) {
-    if (startTime < Date.now().toString()) {
+    if (!validateDatetime(startTime)) {
+      throw new Error('Invalid datetime format');
+    }
+    if (startTime < dayjs().format()) {
       throw new Error('Starting time cannot be in the past');
     }
     this._startTime = startTime;
     return this;
   }
 
-  setDuration(hours) {
-    if (hours <= 0) {
-      throw new Error('Duration must be greater than 0');
+  setEndTime(endTime) {
+    if (!validateDatetime(endTime)) {
+      throw new Error('Invalid datetime format');
     }
-    this._duration = hours;
+    if (endTime < this._startTime) {
+      throw new Error('Ending time cannot be before starting time');
+    }
+    this._endTime = endTime;
     return this;
   }
 
-  setRegisterBefore(time) {
-    if (time > this._startTime) {
+  setRegisterBefore(datetime) {
+    if (!validateDatetime(datetime)) {
+      throw new Error('Invalid datetime format');
+    }
+    if (datetime > this._startTime) {
       throw new Error('Registration time cannot be after the starting time');
     }
-    this._registerBefore = time;
+    this._registerBefore = datetime;
     return this;
   }
 
-  setCancelBefore(time) {
-    if (time > this._startTime) {
-      throw new Error(' Cancellation time cannot be after the starting');
+  setCancelBefore(datetime) {
+    if (!validateDatetime(datetime)) {
+      throw new Error('Invalid datetime format');
     }
-    this._cancelBefore = time;
+    if (datetime > this._startTime) {
+      throw new Error(' Cancellation time cannot be after the starting time');
+    }
+    this._cancelBefore = datetime;
     return this;
   }
 
@@ -72,12 +102,25 @@ class Event {
     return this;
   }
 
-  setImageUrl(imgUrl) {
+  setDescription(desc) {
+    if (desc.length < 3 || desc.length > 300) {
+      throw new Error(
+        'Title must have at least 3 characters and a maximum of 300 characters'
+      );
+    }
+    this._description = desc;
+    return this;
+  }
+
+  setImgUrl(imgUrl) {
     this._imgUrl = imgUrl;
     return this;
   }
 
   setCreatedAt(datetime) {
+    if (!validateDatetime(datetime)) {
+      throw new Error('Invalid datetime format');
+    }
     this._createdAt = datetime;
     return this;
   }
@@ -88,6 +131,9 @@ class Event {
   }
 
   setModifiedAt(datetime) {
+    if (!validateDatetime(datetime)) {
+      throw new Error('Invalid datetime format');
+    }
     this._modifiedAt = datetime;
     return this;
   }
@@ -137,6 +183,9 @@ class Event {
     return this._maxParticipants;
   }
 
+  getDescription() {
+    return this._description;
+  }
   getImageUrl() {
     return this._imgUrl;
   }
@@ -164,11 +213,12 @@ class Event {
       address: this._address,
       lngLat: this._lngLat || null,
       startTime: this._startTime,
-      duration: this._duration,
+      endTime: this._endTime,
       registerBefore: this._registerBefore,
       cancelBefore: this._cancelBefore,
       minParticipants: this._minParticipants,
       maxParticipants: this._maxParticipants,
+      description: this._description || null,
       imgUrl: this._imgUrl || null,
       createdAt: this._createdAt,
       createdBy: this._createdBy,
