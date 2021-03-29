@@ -7,7 +7,7 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "nodemon index.js"
 	},
-	"author": "Quynh Tran",
+	"author": "Ginny Tran",
 	"license": "ISC",
 	"devDependencies": {
 		"nodemon": "^2.0.7"
