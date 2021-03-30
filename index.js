@@ -8,37 +8,13 @@ dotenv.config();
 const PORT = process.env.PORT;
 const app = express();
 
-const createEvent_ctl = require('./controllers/events/createEvent');
+const eventRoutes = require('./routes/events');
 
 app.use(cors());
 app.use(bodyParser.json());
 
-app.post('/events', async (req, res) => {
-  try {
-    const data = await createEvent_ctl.invoke(req);
-    res
-      .status(201)
-      .json(
-        sendSuccessResponse(
-          'OK',
-          { eventId: 1, title: 'Badminton Event' },
-          res.statusCode
-        )
-      );
-  } catch (err) {
-    console.log(err);
-  }
-});
+app.use('/events', eventRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-const sendSuccessResponse = (message, results, statusCode) => {
-  return {
-    message,
-    error: false,
-    code: statusCode,
-    results,
-  };
-};
