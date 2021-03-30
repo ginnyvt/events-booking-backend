@@ -7,16 +7,13 @@ class User {
 		return this;
 	}
 
-	setUserName(username) {
-		const validUser =
-			validator.isAlphanumeric(username) &&
-			validator.isLength(username, { min: 3, max: 10 });
-		if (!validUser) {
-			throw new Error(
-				`username's length MUST contain at least 3 and a maximum of 10 alphanumeric characters`
-			);
-		}
-		this._username = username;
+	setFirstName(firstname) {
+		this._firstName = firstname.toLowerCase();
+		return this;
+	}
+
+	setLastName(lastname) {
+		this._lastName = lastname.toLowerCase();
 		return this;
 	}
 
@@ -53,8 +50,12 @@ class User {
 		return this._id;
 	}
 
-	getUserName() {
-		return this._username;
+	getFirstName() {
+		return this._firstName;
+	}
+
+	getLastName() {
+		return this._lastName;
 	}
 
 	getEmail() {
@@ -68,9 +69,10 @@ class User {
 	toObject() {
 		return Object.freeze({
 			id: this._id,
-			username: this._username,
+			firstName: this._firstName,
+			lastName: this._lastName,
 			email: this._email,
-			// password: this._password,
+			password: this._password,
 		});
 	}
 }

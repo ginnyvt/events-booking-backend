@@ -9,12 +9,16 @@ const PORT = process.env.PORT;
 const app = express();
 
 const eventRoutes = require('./routes/events');
+const userRoutes = require('./routes/users');
+const tokenRoutes = require('./routes/tokens');
 
 app.use(cors());
 app.use(bodyParser.json());
 
 app.use('/events', eventRoutes);
+app.use('/users', userRoutes);
+app.use('/tokens', tokenRoutes);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+	console.log(`Server is running on port ${PORT}`);
 });
