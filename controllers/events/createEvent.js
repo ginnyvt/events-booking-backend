@@ -1,4 +1,5 @@
-const createEvent_uc = require('../../usecase/events/createEvent');
+const createEventUc = require('../../usecase/events/createEvent');
+const createError = require('http-errors');
 
 const invoke = async (req) => {
   if (!req.body.title) {
@@ -33,9 +34,9 @@ const invoke = async (req) => {
     throw new Error('Min participants is required');
   }
 
-  const 
   const validatedEvent = req.body;
-  return await createEvent_uc.handle(validatedEvent);
+  console.log(validatedEvent);
+  return await createEventUc.handle(validatedEvent);
 };
 
 module.exports = { invoke };

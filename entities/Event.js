@@ -28,6 +28,9 @@ class Event {
   }
 
   setLatLong(latLong) {
+    // if (latLong === '') {
+    //   return;
+    // }
     if (!validator.isLatLong(latLong)) {
       throw new Error('Invalid lattitude and longtitude!');
     }
@@ -36,9 +39,7 @@ class Event {
   }
 
   setStartTime(startTime) {
-    if (
-      !validator.isISO8601(startTime, { strict: true, strictSeparator: true })
-    ) {
+    if (!validator.isISO8601(startTime)) {
       throw new Error('Invalid datetime format!');
     }
     if (startTime < dayjs().format()) {
@@ -106,16 +107,17 @@ class Event {
   }
 
   setDescription(desc) {
-    if (!validator.isLength(title, { min: 3, max: 300 })) {
-      throw new Error(
-        'Description must have at least 3 characters and a maximum of 300 characters!'
-      );
+    if (!validator.isLength(desc, { min: 0, max: 300 })) {
+      throw new Error('Description must have a maximum of 300 characters!');
     }
     this._description = desc;
     return this;
   }
 
   setImgUrl(imgUrl) {
+    // if (imgUrl === '') {
+    //   return;
+    // }
     if (!validator.isURL(imgUrl)) {
       throw new Error('Invalid URL!');
     }
@@ -197,7 +199,7 @@ class Event {
     return this._description;
   }
 
-  getImageUrl() {
+  getImgUrl() {
     return this._imgUrl;
   }
 
@@ -222,15 +224,15 @@ class Event {
       id: this._id,
       title: this._title,
       address: this._address,
-      latLong: this._latLong || null,
+      latLong: this._latLong || 'Not Given',
       startTime: this._startTime,
       endTime: this._endTime,
       registerBefore: this._registerBefore,
       cancelBefore: this._cancelBefore,
       minParticipants: this._minParticipants,
       maxParticipants: this._maxParticipants,
-      description: this._description || null,
-      imgUrl: this._imgUrl || null,
+      description: this._description || 'Not Given',
+      imgUrl: this._imgUrl || 'Not Given',
       createdAt: this._createdAt,
       createdBy: this._createdBy,
       modifiedAt: this._modifiedAt,
