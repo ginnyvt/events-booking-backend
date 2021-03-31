@@ -11,17 +11,18 @@ const handle = async (validatedUser) => {
 		return bcrypt
 			.compare(validatedUser.password, existUser.password)
 			.then((result) => {
+				console.log(result);
 				if (result) {
 					// create token here
 					const token = generateAccessToken(existUser.email);
 					return { ...existUser, token };
 				} else {
-					throw createError(401, 'Incorrect password!');
+					throw createError(401, 'Incorrect Password!');
 				}
-			})
-			.catch((err) => {
-				throw createError(500, err.message);
 			});
+		// .catch((err) => {
+		// 	throw createError(401, err.message);
+		// });
 	} else {
 		throw createError(400, 'Cannot find the requested user!');
 	}
