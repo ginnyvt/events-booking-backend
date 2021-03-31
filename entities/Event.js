@@ -1,9 +1,5 @@
 const dayjs = require('dayjs');
-
-const validateDatetime = (datetime) => {
-  const datetimeRegex = /\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(?:.\d{7})?[+|-](0[0-9]|1[0-2]):(00|15|30|45)/;
-  return datetimeRegex.test(datetime);
-};
+const validator = require('validator');
 
 class Event {
   setId(id) {
@@ -12,75 +8,80 @@ class Event {
   }
 
   setTitle(title) {
-    if (title.length < 3 || title.length > 60) {
+    if (!validator.isLength(title, { min: 3, max: 60 })) {
       throw new Error(
-        'Title must have at least 3 characters and a maximum of 60 characters'
+        'Title must have at least 3 and a maximum of 60 characters!'
       );
     }
     this._title = title;
     return this;
   }
 
-  // Validate address:
   setAddress(address) {
-    if (address.length < 3 || address.length > 60) {
+    if (!validator.isLength(address, { min: 3, max: 60 })) {
       throw new Error(
-        'Address must have at least 3 characters and a maximum of 60 characters'
+        'Address must have at least 3 and a maximum of 60 characters!'
       );
     }
     this._address = address;
     return this;
   }
 
-  // validate regular expression
-  setLngLat(lngLat) {
-    const lngLatRegex = /\-?[0-9]+[\.]{0,1}[0-9]*/;
-    if (!lngLatRegex.test(lngLat)) {
-      throw new Error('Invalid longtitude and lattitude!');
+  setLatLong(latLong) {
+    if (!validator.isLatLong(latLong)) {
+      throw new Error('Invalid lattitude and longtitude!');
     }
-    this._lngLat = lngLat;
+    this._latLong = latLong;
     return this;
   }
 
   setStartTime(startTime) {
-    if (!validateDatetime(startTime)) {
-      throw new Error('Invalid datetime format');
+    if (
+      !validator.isISO8601(startTime, { strict: true, strictSeparator: true })
+    ) {
+      throw new Error('Invalid datetime format!');
     }
     if (startTime < dayjs().format()) {
-      throw new Error('Starting time cannot be in the past');
+      throw new Error('Starting time cannot be in the past!');
     }
     this._startTime = startTime;
     return this;
   }
 
   setEndTime(endTime) {
-    if (!validateDatetime(endTime)) {
-      throw new Error('Invalid datetime format');
+    if (
+      !validator.isISO8601(endTime, { strict: true, strictSeparator: true })
+    ) {
+      throw new Error('Invalid datetime format!');
     }
     if (endTime < this._startTime) {
-      throw new Error('Ending time cannot be before starting time');
+      throw new Error('Ending time cannot be before starting time!');
     }
     this._endTime = endTime;
     return this;
   }
 
   setRegisterBefore(datetime) {
-    if (!validateDatetime(datetime)) {
-      throw new Error('Invalid datetime format');
+    if (
+      !validator.isISO8601(datetime, { strict: true, strictSeparator: true })
+    ) {
+      throw new Error('Invalid datetime format!');
     }
     if (datetime > this._startTime) {
-      throw new Error('Registration time cannot be after the starting time');
+      throw new Error('Registration time cannot be after the starting time!');
     }
     this._registerBefore = datetime;
     return this;
   }
 
   setCancelBefore(datetime) {
-    if (!validateDatetime(datetime)) {
-      throw new Error('Invalid datetime format');
+    if (
+      !validator.isISO8601(datetime, { strict: true, strictSeparator: true })
+    ) {
+      throw new Error('Invalid datetime format!');
     }
     if (datetime > this._startTime) {
-      throw new Error(' Cancellation time cannot be after the starting time');
+      throw new Error(' Cancellation time cannot be after the starting time!');
     }
     this._cancelBefore = datetime;
     return this;
@@ -88,7 +89,7 @@ class Event {
 
   setMinParticipants(participants) {
     if (participants < 2) {
-      throw new Error('Participants must have at least two');
+      throw new Error('Participants must have at least two!');
     }
     this._minParticipants = participants;
     return this;
@@ -96,16 +97,18 @@ class Event {
 
   setMaxParticipants(participants) {
     if (participants < this._minParticipants) {
-      throw new Error('Max participants must be greater than min participants');
+      throw new Error(
+        'Max participants must be greater than min participants!'
+      );
     }
     this._maxParticipants = participants;
     return this;
   }
 
   setDescription(desc) {
-    if (desc.length < 3 || desc.length > 300) {
+    if (!validator.isLength(title, { min: 3, max: 300 })) {
       throw new Error(
-        'Title must have at least 3 characters and a maximum of 300 characters'
+        'Description must have at least 3 characters and a maximum of 300 characters!'
       );
     }
     this._description = desc;
@@ -113,13 +116,18 @@ class Event {
   }
 
   setImgUrl(imgUrl) {
+    if (!validator.isURL(imgUrl)) {
+      throw new Error('Invalid URL!');
+    }
     this._imgUrl = imgUrl;
     return this;
   }
 
   setCreatedAt(datetime) {
-    if (!validateDatetime(datetime)) {
-      throw new Error('Invalid datetime format');
+    if (
+      !validator.isISO8601(datetime, { strict: true, strictSeparator: true })
+    ) {
+      throw new Error('Invalid datetime format!');
     }
     this._createdAt = datetime;
     return this;
@@ -131,8 +139,10 @@ class Event {
   }
 
   setModifiedAt(datetime) {
-    if (!validateDatetime(datetime)) {
-      throw new Error('Invalid datetime format');
+    if (
+      !validator.isISO8601(datetime, { strict: true, strictSeparator: true })
+    ) {
+      throw new Error('Invalid datetime format!');
     }
     this._modifiedAt = datetime;
     return this;
@@ -163,8 +173,8 @@ class Event {
     return this._startTime;
   }
 
-  getDuration() {
-    return this._duration;
+  getEndTime() {
+    return this._endTime;
   }
 
   getRegisterBefore() {
@@ -186,6 +196,7 @@ class Event {
   getDescription() {
     return this._description;
   }
+
   getImageUrl() {
     return this._imgUrl;
   }
@@ -211,7 +222,7 @@ class Event {
       id: this._id,
       title: this._title,
       address: this._address,
-      lngLat: this._lngLat || null,
+      latLong: this._latLong || null,
       startTime: this._startTime,
       endTime: this._endTime,
       registerBefore: this._registerBefore,
