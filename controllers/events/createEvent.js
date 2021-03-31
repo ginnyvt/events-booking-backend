@@ -34,9 +34,12 @@ const invoke = async (req) => {
     throw new Error('Min participants is required');
   }
 
+
   const validatedEvent = req.body;
   console.log(validatedEvent);
   return await createEventUc.handle(validatedEvent);
+
+
 };
 
 module.exports = { invoke };
