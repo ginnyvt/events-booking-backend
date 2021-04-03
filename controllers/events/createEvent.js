@@ -2,6 +2,7 @@ const createEventUc = require('../../usecase/events/createEvent');
 const createError = require('http-errors');
 
 const invoke = async (req) => {
+  console.log(req.user);
   if (!req.body.title) {
     throw new Error('Title is required!');
   }
@@ -34,12 +35,9 @@ const invoke = async (req) => {
     throw new Error('Min participants is required');
   }
 
-
-  const validatedEvent = req.body;
+  const validatedEvent = { ...req.body, userId: req.user.sub };
   console.log(validatedEvent);
   return await createEventUc.handle(validatedEvent);
-
-
 };
 
 module.exports = { invoke };
