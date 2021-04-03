@@ -1,11 +1,9 @@
-
 const eventRepo = require('../../repositories/events');
 const Event = require('../../entities/Event');
 
 const { v4: uuidv4 } = require('uuid');
 const createError = require('http-errors');
 const dayjs = require('dayjs');
-
 
 const handle = async (validatedEvent) => {
   const {
@@ -17,15 +15,12 @@ const handle = async (validatedEvent) => {
     cancelBefore,
     maxParticipants,
     minParticipants,
-
     latLong,
     imgUrl,
     description,
-
   } = validatedEvent;
 
   const event = new Event();
-
 
   if (latLong !== '') {
     event.setLatLong(latLong);
@@ -55,7 +50,6 @@ const handle = async (validatedEvent) => {
     .setModifiedBy('a68ab32d-2eb8-424c-a632-bfe8b6d9b7a4');
 
   return await eventRepo.insert(event.toObject());
-
 };
 
 module.exports = { handle };
