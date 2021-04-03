@@ -18,6 +18,7 @@ const handle = async (validatedEvent) => {
     latLong,
     imgUrl,
     description,
+    userId,
   } = validatedEvent;
 
   const event = new Event();
@@ -45,9 +46,9 @@ const handle = async (validatedEvent) => {
     .setMaxParticipants(maxParticipants)
     .setMinParticipants(minParticipants)
     .setCreatedAt(dayjs().format())
-    .setCreatedBy('Quynh Tran')
+    .setCreatedBy(userId)
     .setModifiedAt(dayjs().format())
-    .setModifiedBy('Quynh Tran');
+    .setModifiedBy(userId);
 
   return await eventRepo.insert(event.toObject());
 };
