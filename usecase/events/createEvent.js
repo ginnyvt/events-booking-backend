@@ -45,9 +45,9 @@ const handle = async (validatedEvent) => {
     .setMaxParticipants(maxParticipants)
     .setMinParticipants(minParticipants)
     .setCreatedAt(dayjs().format())
-    .setCreatedBy('a68ab32d-2eb8-424c-a632-bfe8b6d9b7a4')
+    .setCreatedBy('Quynh Tran')
     .setModifiedAt(dayjs().format())
-    .setModifiedBy('a68ab32d-2eb8-424c-a632-bfe8b6d9b7a4');
+    .setModifiedBy('Quynh Tran');
 
   return await eventRepo.insert(event.toObject());
 };
