@@ -1,26 +1,24 @@
 const axios = require('axios').default;
 
-// console.log(
-//   process.env.DOMAIN,
-//   process.env.MACHINE_CLIENT_ID,
-//   process.env.MACHINE_CLIENT_SECRET
-// );
+const domain = process.env.DOMAIN;
+const client_id = process.env.CLIENT_ID;
+const client_secret = process.env.CLIENT_SECRET;
 
-const optAxios = {
+const getTokenOpts = {
   method: 'POST',
-  url: `https://${process.env.DOMAIN}/oauth/token`,
+  url: `https://${domain}/oauth/token`,
   headers: { 'content-type': 'application/json' },
   data: JSON.stringify({
     grant_type: 'client_credentials',
-    client_id: process.env.MACHINE_CLIENT_ID,
-    client_secret: process.env.MACHINE_CLIENT_SECRET,
-    audience: `https://${process.env.DOMAIN}/api/v2/`,
+    client_id: client_id,
+    client_secret: client_secret,
+    audience: `https://${domain}/api/v2/`,
   }),
 };
 
 const getTokenApi = async () => {
   try {
-    const response = await axios.request(optAxios);
+    const response = await axios.request(getTokenOpts);
     return response.data;
   } catch (err) {
     console.log(err);

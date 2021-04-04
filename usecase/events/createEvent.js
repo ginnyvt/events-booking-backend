@@ -6,49 +6,25 @@ const createError = require('http-errors');
 const dayjs = require('dayjs');
 
 const handle = async (validatedEvent) => {
-  const {
-    title,
-    address,
-    startTime,
-    endTime,
-    registerBefore,
-    cancelBefore,
-    maxParticipants,
-    minParticipants,
-    latLong,
-    imgUrl,
-    description,
-    userId,
-  } = validatedEvent;
-
   const event = new Event();
-
-  if (latLong !== '') {
-    event.setLatLong(latLong);
-  }
-
-  if (imgUrl !== '') {
-    event.setImgUrl(imgUrl);
-  }
-
-  if (description !== '') {
-    event.setDescription(description);
-  }
 
   event
     .setId(uuidv4())
-    .setTitle(title)
-    .setAddress(address)
-    .setStartTime(startTime)
-    .setEndTime(endTime)
-    .setRegisterBefore(registerBefore)
-    .setCancelBefore(cancelBefore)
-    .setMaxParticipants(maxParticipants)
-    .setMinParticipants(minParticipants)
+    .setTitle(validatedEvent.title)
+    .setAddress(validatedEvent.address)
+    .setStartTime(validatedEvent.startTime)
+    .setEndTime(validatedEvent.endTime)
+    .setRegisterBefore(validatedEvent.registerBefore)
+    .setCancelBefore(validatedEvent.cancelBefore)
+    .setMaxParticipants(validatedEvent.maxParticipants)
+    .setMinParticipants(validatedEvent.minParticipants)
     .setCreatedAt(dayjs().format())
-    .setCreatedBy(userId)
+    .setCreatedBy(validatedEvent.userId)
     .setModifiedAt(dayjs().format())
-    .setModifiedBy(userId);
+    .setModifiedBy(validatedEvent.userId)
+    .setLatLong(validatedEvent.latLong || null)
+    .setImgUrl(validatedEvent.imgUrl || null)
+    .setDescription(validatedEvent.description || null);
 
   return await eventRepo.insert(event.toObject());
 };

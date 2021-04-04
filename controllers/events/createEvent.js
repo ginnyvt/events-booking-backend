@@ -35,7 +35,6 @@ const invoke = async (req) => {
   }
 
   const validatedEvent = { ...req.body, userId: req.user.sub };
-  console.log(validatedEvent);
 
   return await createEventUc.handle(validatedEvent);
 };
