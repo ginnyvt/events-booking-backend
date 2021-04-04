@@ -1,6 +1,5 @@
 const mongoConnect = require('../database/mongodb');
 const createError = require('http-errors');
-// const MUUID = require('uuid-mongodb');
 
 const insert = async (event) => {
   const insertingEventObj = { ...event };
@@ -28,4 +27,31 @@ const getById = async (eventId) => {
   }
 };
 
-module.exports = { insert, getById };
+const update = async (event) => {
+  const insertingEventObj = { _id: event.id, ...event };
+
+  delete insertingEventObj.id;
+  const db = await mongoConnect.connectdb();
+  try {
+    await db.collection('events').updateOne(
+      { _id: insertingEventObj.id },
+      {
+        $set: { ...insertingEventObj },
+      }
+    );
+    return insertingEventObj;
+  } catch (err) {
+    throw createError(500, err.message);
+  }
+};
+
+const remove = async (eventId) => {
+  const db = await mongoConnect.connectdb();
+  try {
+    await db.collection('events').deleteOne({ _id: eventId });
+  } catch (err) {
+    throw createError(500, err.message);
+  }
+};
+
+module.exports = { insert, getById, update, remove };
