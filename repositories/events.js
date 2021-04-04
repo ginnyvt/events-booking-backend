@@ -1,5 +1,6 @@
 const mongoConnect = require('../database/mongodb');
 const createError = require('http-errors');
+// const MUUID = require('uuid-mongodb');
 
 const insert = async (event) => {
   const insertingEventObj = { ...event };
@@ -17,4 +18,14 @@ const insert = async (event) => {
   }
 };
 
-module.exports = { insert };
+const getById = async (eventId) => {
+  const db = await mongoConnect.connectdb();
+  try {
+    const result = await db.collection('events').findOne({ _id: eventId });
+    return result;
+  } catch (err) {
+    throw createError(500, err.message);
+  }
+};
+
+module.exports = { insert, getById };
