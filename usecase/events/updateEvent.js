@@ -1,7 +1,7 @@
 const eventRepo = require('../../repositories/events');
 const createError = require('http-errors');
 const dayjs = require('dayjs');
-const axios = require('axios').default;
+const getUserUc = require('../../usecase/users/getUser');
 
 const auth0Api = require('../../utils/auth0-apis');
 const domain = process.env.DOMAIN;
@@ -38,32 +38,11 @@ const handle = async (validatedEvent) => {
       .setDescription(validatedEvent.description || foundEvent.description);
 
     const result = await eventRepo.update(updatedEventObj.toObject());
-    console.log(result);
+    // console.log(result);
     if (result !== {}) {
       const userId = result.modifiedBy;
-      console.log(userId);
-      const { access_token } = await auth0Api.getTokenApi();
-      console.log(access_token);
-
-      const opts = {
-        method: 'GET',
-        url: `https://${domain}/api/v2/users/${userId}`,
-        headers: {
-          'content-type': 'application/json',
-          authorization: `Bearer ${access_token}`,
-        },
-      };
-
-      return axios
-        .request(opts)
-        .then((res) => {
-          console.log(res.data);
-          const { name, email } = res.data;
-          return { ...result, modifier: { name, email } };
-        })
-        .catch((err) => {
-          throw createError(500, err.message);
-        });
+      const foundUser = await getUserUc.handle(userId);
+      return { ...result, modifier: { ...foundUser } };
     } else {
       throw createError(500, 'Event unsuccessfully updated');
     }
