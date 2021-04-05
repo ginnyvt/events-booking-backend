@@ -5,12 +5,46 @@ const createEventCtl = require('../controllers/events/createEvent');
 const getEventCtl = require('../controllers/events/getEvent');
 const updateEventCtl = require('../controllers/events/updateEvent');
 const deleteEventCtl = require('../controllers/events/deleteEvent');
+const listEventsCtl = require('../controllers/events/listEvents');
+const listMyEventsCtl = require('../controllers/events/listMyEvents');
 
 const httpResponse = require('../utils/http-response');
 const check = require('../utils/check-jwt');
 
-router.get('/', (req, res) => {
-  res.status(200).json({ id: 1, title: 'Badminton event' });
+router.get('/', async (req, res) => {
+  try {
+    const data = await listEventsCtl.invoke(req);
+    res
+      .status(200)
+      .json(
+        httpResponse.sendSuccessResponse(
+          'Events successfully retrieved.',
+          data,
+          res.statusCode
+        )
+      );
+  } catch (err) {
+    console.log(err);
+    // httpResponse.sendErrorResponse(res, err);
+  }
+});
+
+router.get('/myevents', check.checkJwt, async (req, res) => {
+  try {
+    const data = await listMyEventsCtl.invoke(req);
+    res
+      .status(200)
+      .json(
+        httpResponse.sendSuccessResponse(
+          'Events successfully retrieved.',
+          data,
+          res.statusCode
+        )
+      );
+  } catch (err) {
+    console.log(err);
+    // httpResponse.sendErrorResponse(res, err);
+  }
 });
 
 router.post('/', check.checkJwt, async (req, res) => {

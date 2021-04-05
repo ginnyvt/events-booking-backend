@@ -1,5 +1,6 @@
 const mongoConnect = require('../database/mongodb');
 const createError = require('http-errors');
+const dayjs = require('dayjs');
 
 const insert = async (event) => {
   const insertingEventObj = { ...event };
@@ -54,4 +55,53 @@ const remove = async (eventId) => {
   }
 };
 
-module.exports = { insert, getById, update, remove };
+const listUpcomingEvents = async () => {
+  const db = await mongoConnect.connectdb();
+  try {
+    const currentDateTime = dayjs().format();
+    return await db
+      .collection('events')
+      .find({ startTime: { $gt: currentDateTime } })
+      .sort({ startTime: 1 })
+      .toArray();
+  } catch (err) {
+    throw createError(500, err.message);
+  }
+};
+
+const listPastEvents = async () => {
+  const db = await mongoConnect.connectdb();
+  try {
+    const currentDateTime = dayjs().format();
+    return await db
+      .collection('events')
+      .find({ startTime: { $lte: currentDateTime } })
+      .sort({ startTime: 1 })
+      .toArray();
+  } catch (err) {
+    throw createError(500, err.message);
+  }
+};
+
+listMyEvents = async (currentUser) => {
+  const db = await mongoConnect.connectdb();
+  try {
+    return await db
+      .collection('events')
+      .find({ createdBy: currentUser })
+      .sort({ startTime: 1 })
+      .toArray();
+  } catch (err) {
+    throw createError(500, err.message);
+  }
+};
+
+module.exports = {
+  insert,
+  getById,
+  update,
+  remove,
+  listUpcomingEvents,
+  listPastEvents,
+  listMyEvents,
+};
