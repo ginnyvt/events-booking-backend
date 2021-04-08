@@ -30,16 +30,17 @@ const getById = async (eventId) => {
 
 const update = async (event) => {
   const insertingEventObj = { _id: event.id, ...event };
-
   delete insertingEventObj.id;
+
   const db = await mongoConnect.connectdb();
   try {
     await db.collection('events').updateOne(
-      { _id: insertingEventObj.id },
+      { _id: insertingEventObj._id },
       {
         $set: { ...insertingEventObj },
       }
     );
+
     return insertingEventObj;
   } catch (err) {
     throw createError(500, err.message);
