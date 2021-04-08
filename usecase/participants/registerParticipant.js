@@ -7,38 +7,38 @@ const { v4: uuidv4 } = require('uuid');
 const dayjs = require('dayjs');
 const createError = require('http-errors');
 
-const handle = async (regParticipantDto) => {
+const handle = async (registrationDto) => {
   // Get event
-  const foundEvent = await eventRepo.getById(regParticipantDto.eventId);
+  const foundEvent = await eventRepo.getById(registrationDto.eventId);
 
   if (foundEvent) {
     // Check registration time
     const currentTime = dayjs().format();
     if (currentTime < foundEvent.registerBefore) {
       const registered = await participantRepo.findParticipant(
-        regParticipantDto.userId
+        registrationDto.userId,
+        registrationDto.eventId
       );
 
-      if (registered !== null) {
+      if (registered !== null && registered.status !== 'cancelled') {
         throw createError(400, 'You have already registered!');
       }
 
-      const count = await participantRepo.countParticipants();
+      const count = await participantRepo.countParticipants(foundEvent.eventId);
       if (count < foundEvent.maxParticipants) {
         const participant = new Participant()
           .setId(uuidv4())
-          .setUserId(regParticipantDto.userId)
-          .setEventId(regParticipantDto.eventId)
+          .setUserId(registrationDto.userId)
+          .setEventId(registrationDto.eventId)
           .setStatus('joined')
           .setCreatedAt(dayjs().format())
-          .setCreatedBy(regParticipantDto.userId)
+          .setCreatedBy(registrationDto.userId)
           .setModifiedAt(dayjs().format())
-          .setModifiedBy(regParticipantDto.userId)
+          .setModifiedBy(registrationDto.userId)
           .toObject();
         const registration = await participantRepo.insert(participant);
-        const participantInfo = await userRepo.get(registration.userId);
-
-        return { ...registration, participantInfo: { ...participantInfo } };
+        const foundUser = await userRepo.get(registration.userId);
+        return { ...registration, creator: { ...foundUser } };
       } else {
         throw createError(400, 'Event is full');
       }
