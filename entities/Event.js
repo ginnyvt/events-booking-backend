@@ -88,19 +88,18 @@ class Event {
   }
 
   setMinParticipants(participants) {
-    if (participants < 2) {
-      throw new Error('Participants must have at least two!');
+    if (participants < 0) {
+      throw new Error('Participants cannot be 0!');
     }
     this._minParticipants = participants;
     return this;
   }
 
   setMaxParticipants(participants) {
-    if (participants < this._minParticipants) {
-      throw new Error(
-        'Max participants must be greater than min participants!'
-      );
+    if (participants !== null && participants < this._minParticipants) {
+      throw new Error('Max participants must be greater than min participants');
     }
+
     this._maxParticipants = participants;
     return this;
   }
