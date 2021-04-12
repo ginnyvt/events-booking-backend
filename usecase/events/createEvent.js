@@ -1,5 +1,6 @@
 const eventRepo = require('../../repositories/events');
 const Event = require('../../entities/Event');
+const SendCreatedEventEmail = require('../../observers/SendCreatedEventEmail');
 
 const { v4: uuidv4 } = require('uuid');
 const createError = require('http-errors');
@@ -26,7 +27,13 @@ const handle = async (validatedEvent) => {
     .setImgUrl(validatedEvent.imgUrl || null)
     .setDescription(validatedEvent.description || null);
 
-  return await eventRepo.insert(event.toObject());
+  const createdEvent = await eventRepo.insert(event.toObject());
+
+  // Notify the observer
+  const sendCreatedEventEmailObserver = new SendCreatedEventEmail();
+  event.addObserver(sendCreatedEventEmailObserver);
+  event.notify();
+  return createdEvent;
 };
 
 module.exports = { handle };

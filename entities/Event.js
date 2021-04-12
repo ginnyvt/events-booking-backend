@@ -2,6 +2,23 @@ const dayjs = require('dayjs');
 const validator = require('validator');
 
 class Event {
+  constructor() {
+    this._observers = [];
+  }
+
+  addObserver(observer) {
+    this._observers.push(observer);
+  }
+
+  removeObserver(observer) {
+    const index = this._observers.indexOf(observer);
+    this._observers.splice(index, index);
+  }
+
+  notify() {
+    this._observers.forEach((observer) => observer.receive(this));
+  }
+
   setId(id) {
     this._id = id;
     return this;
