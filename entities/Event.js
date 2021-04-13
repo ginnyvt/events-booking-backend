@@ -141,6 +141,11 @@ class Event {
     return this;
   }
 
+  setStatus(status) {
+    this._status = status;
+    return this;
+  }
+
   setCreatedAt(datetime) {
     if (
       !validator.isISO8601(datetime, { strict: true, strictSeparator: true })
@@ -219,6 +224,10 @@ class Event {
     return this._imgUrl;
   }
 
+  getStatus() {
+    return this._status;
+  }
+
   getCreatedAt() {
     return this._createdAt;
   }
@@ -249,6 +258,7 @@ class Event {
       maxParticipants: this._maxParticipants,
       description: this._description,
       imgUrl: this._imgUrl,
+      status: this._status,
       createdAt: this._createdAt,
       createdBy: this._createdBy,
       modifiedAt: this._modifiedAt,
