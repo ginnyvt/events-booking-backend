@@ -10,6 +10,10 @@ const handle = async (eventDto, currentUser) => {
   // Find the event to update
   const foundEvent = await eventRepo.getById(eventDto.id);
 
+  if (foundEvent && foundEvent.status === 'cancelled') {
+    throw createError(400, 'You cannot update a cancelled event!');
+  }
+
   if (foundEvent) {
     //Check permission. Only allows admin and event's owner to update
     const adminListArr = process.env.ADMINLIST.split(',');
@@ -32,6 +36,7 @@ const handle = async (eventDto, currentUser) => {
         .setMinParticipants(
           eventDto.minParticipants || foundEvent.minParticipants
         )
+        .setStatus(eventDto.status || foundEvent.status)
         .setCreatedAt(foundEvent.createdAt)
         .setCreatedBy(foundEvent.createdBy)
         .setModifiedAt(dayjs().format())

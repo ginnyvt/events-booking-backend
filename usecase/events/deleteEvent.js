@@ -6,18 +6,15 @@ const handle = async (eventId, currentUser) => {
   const foundEvent = await eventRepo.getById(eventId);
 
   if (foundEvent) {
-    // Check permission; ONLY admin and owner can delete event
+    // Check permission; ONLY admin can delete event
     const adminListArr = process.env.ADMINLIST.split(',');
-    if (
-      adminListArr.includes(currentUser) ||
-      foundEvent.createdBy === currentUser
-    ) {
+    if (adminListArr.includes(currentUser)) {
       await eventRepo.remove(foundEvent._id);
       return foundEvent;
     } else {
       throw createError(
         400,
-        'Your account is not allowed to delete the following event'
+        'Your account is not allowed to delete the following event!'
       );
     }
   } else {

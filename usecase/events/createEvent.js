@@ -3,7 +3,6 @@ const Event = require('../../entities/Event');
 const SendCreatedEventEmail = require('../../observers/SendCreatedEventEmail');
 
 const { v4: uuidv4 } = require('uuid');
-const createError = require('http-errors');
 const dayjs = require('dayjs');
 
 const handle = async (validatedEvent) => {
@@ -19,6 +18,7 @@ const handle = async (validatedEvent) => {
     .setCancelBefore(validatedEvent.cancelBefore)
     .setMaxParticipants(validatedEvent.maxParticipants || null)
     .setMinParticipants(validatedEvent.minParticipants || 0)
+    .setStatus('active')
     .setCreatedAt(dayjs().format())
     .setCreatedBy(validatedEvent.userId)
     .setModifiedAt(dayjs().format())
