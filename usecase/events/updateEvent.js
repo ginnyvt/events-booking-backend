@@ -4,6 +4,7 @@ const dayjs = require('dayjs');
 const getUserUc = require('../../usecase/users/getUser');
 
 const Event = require('../../entities/Event');
+const SendUpdatedEventEmail = require('../../observers/SendUpdatedEventEmail');
 
 const handle = async (eventDto, currentUser) => {
   // Find the event to update
@@ -39,18 +40,26 @@ const handle = async (eventDto, currentUser) => {
         .setImgUrl(eventDto.imgUrl || foundEvent.imgUrl)
         .setDescription(eventDto.description || foundEvent.description);
 
+      // Waiting mongodb to update
       const result = await eventRepo.update(updatedEventObj.toObject());
+
       if (result !== {}) {
+        // Nofity sendUpdatedEventEmailObserver
+        const sendUpdatedEventEmailObserver = new SendUpdatedEventEmail();
+        updatedEventObj.addObserver(sendUpdatedEventEmailObserver);
+        updatedEventObj.notify();
+
+        // Return updated event
         const userId = result.modifiedBy;
         const foundUser = await getUserUc.handle(userId);
         return { ...result, modifier: { ...foundUser } };
       } else {
-        throw createError(500, 'Event unsuccessfully updated');
+        throw createError(500, 'Event unsuccessfully updated!');
       }
     } else {
       throw createError(
         400,
-        'Your account is not allowed to update the following event'
+        'Your account is not allowed to update the following event!'
       );
     }
   } else {
