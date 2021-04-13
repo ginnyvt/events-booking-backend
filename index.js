@@ -10,6 +10,7 @@ const app = express();
 
 const eventRoutes = require('./routes/events');
 const participantRoutes = require('./routes/participants');
+const subscriberRoutes = require('./routes/subscribers');
 
 // Utils import
 // const checkJwt = require('./utils/checkJwt');
@@ -20,6 +21,7 @@ app.use(bodyParser.json());
 
 app.use('/events', eventRoutes);
 app.use('/participants', participantRoutes);
+app.use('/subscribers', subscriberRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

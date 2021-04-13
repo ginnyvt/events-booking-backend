@@ -59,15 +59,23 @@ const update = async (updateRegistration) => {
   }
 };
 
-// const remove = async (updateRegistrationId) => {
-//   const db = await mongoConnect.connectdb();
-//   try {
-//     await db
-//       .collection('participants')
-//       .deleteOne({ _id: updateRegistrationId });
-//   } catch (err) {
-//     throw createError(500, err.message);
-//   }
-// };
+const listJoinedParticipants = async (eventId) => {
+  const db = await mongoConnect.connectdb();
+  try {
+    const result = await db
+      .collection('participants')
+      .find({ $and: [{ eventId: eventId }, { status: 'joined' }] })
+      .toArray();
+    return result;
+  } catch (err) {
+    throw createError(500, err.message);
+  }
+};
 
-module.exports = { insert, countParticipants, findParticipant, update };
+module.exports = {
+  insert,
+  countParticipants,
+  findParticipant,
+  update,
+  listJoinedParticipants,
+};
