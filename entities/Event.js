@@ -1,5 +1,6 @@
 const dayjs = require('dayjs');
 const validator = require('validator');
+const createError = require('http-errors');
 
 class Event {
   constructor() {
@@ -26,7 +27,8 @@ class Event {
 
   setTitle(title) {
     if (!validator.isLength(title, { min: 3, max: 60 })) {
-      throw new Error(
+      throw createError(
+        400,
         'Title must have at least 3 and a maximum of 60 characters!'
       );
     }
@@ -36,7 +38,8 @@ class Event {
 
   setAddress(address) {
     if (!validator.isLength(address, { min: 3, max: 60 })) {
-      throw new Error(
+      throw createError(
+        400,
         'Address must have at least 3 and a maximum of 60 characters!'
       );
     }
@@ -47,7 +50,7 @@ class Event {
   setLatLong(latLong) {
     if (latLong !== null) {
       if (!validator.isLatLong(latLong)) {
-        throw new Error('Invalid lattitude and longtitude!');
+        throw createError(400, 'Invalid lattitude and longtitude!');
       }
     }
     this._latLong = latLong;
@@ -56,10 +59,10 @@ class Event {
 
   setStartTime(startTime) {
     if (!validator.isISO8601(startTime)) {
-      throw new Error('Invalid datetime format!');
+      throw createError(400, 'Invalid datetime format!');
     }
     if (startTime < dayjs().format()) {
-      throw new Error('Starting time cannot be in the past!');
+      throw createError(400, 'Starting time cannot be in the past!');
     }
     this._startTime = startTime;
     return this;
@@ -69,10 +72,10 @@ class Event {
     if (
       !validator.isISO8601(endTime, { strict: true, strictSeparator: true })
     ) {
-      throw new Error('Invalid datetime format!');
+      throw createError(400, 'Invalid datetime format!');
     }
     if (endTime < this._startTime) {
-      throw new Error('Ending time cannot be before starting time!');
+      throw createError(400, 'Ending time cannot be before starting time!');
     }
     this._endTime = endTime;
     return this;
@@ -82,10 +85,13 @@ class Event {
     if (
       !validator.isISO8601(datetime, { strict: true, strictSeparator: true })
     ) {
-      throw new Error('Invalid datetime format!');
+      throw createError(400, 'Invalid datetime format!');
     }
     if (datetime > this._startTime) {
-      throw new Error('Registration time cannot be after the starting time!');
+      throw createError(
+        400,
+        'Registration time cannot be after the starting time!'
+      );
     }
     this._registerBefore = datetime;
     return this;
@@ -95,10 +101,13 @@ class Event {
     if (
       !validator.isISO8601(datetime, { strict: true, strictSeparator: true })
     ) {
-      throw new Error('Invalid datetime format!');
+      throw createError(400, 'Invalid datetime format!');
     }
     if (datetime > this._startTime) {
-      throw new Error(' Cancellation time cannot be after the starting time!');
+      throw createError(
+        400,
+        ' Cancellation time cannot be after the starting time!'
+      );
     }
     this._cancelBefore = datetime;
     return this;
@@ -106,7 +115,7 @@ class Event {
 
   setMinParticipants(participants) {
     if (participants < 0) {
-      throw new Error('Participants cannot be 0!');
+      throw createError(400, 'Participants cannot be 0!');
     }
     this._minParticipants = participants;
     return this;
@@ -114,7 +123,10 @@ class Event {
 
   setMaxParticipants(participants) {
     if (participants !== null && participants < this._minParticipants) {
-      throw new Error('Max participants must be greater than min participants');
+      throw createError(
+        400,
+        'Max participants must be greater than min participants'
+      );
     }
 
     this._maxParticipants = participants;
@@ -124,7 +136,10 @@ class Event {
   setDescription(desc) {
     if (desc !== null) {
       if (!validator.isLength(desc, { min: 0, max: 300 })) {
-        throw new Error('Description must have a maximum of 300 characters!');
+        throw createError(
+          400,
+          'Description must have a maximum of 300 characters!'
+        );
       }
     }
     this._description = desc;
@@ -134,7 +149,7 @@ class Event {
   setImgUrl(imgUrl) {
     if (imgUrl !== null) {
       if (!validator.isURL(imgUrl)) {
-        throw new Error('Invalid URL!');
+        throw createError(400, 'Invalid URL!');
       }
     }
     this._imgUrl = imgUrl;

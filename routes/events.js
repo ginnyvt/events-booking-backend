@@ -18,14 +18,14 @@ router.get('/', async (req, res) => {
       .status(200)
       .json(
         httpResponse.sendSuccessResponse(
-          'Events successfully retrieved.',
+          'Events successfully retrieved!',
           data,
           res.statusCode
         )
       );
   } catch (err) {
     console.log(err);
-    // httpResponse.sendErrorResponse(res, err);
+    httpResponse.sendErrorResponse(res, err);
   }
 });
 
@@ -36,14 +36,14 @@ router.get('/myevents', check.checkJwt, async (req, res) => {
       .status(200)
       .json(
         httpResponse.sendSuccessResponse(
-          'Events successfully retrieved.',
+          'Events successfully retrieved!',
           data,
           res.statusCode
         )
       );
   } catch (err) {
     console.log(err);
-    // httpResponse.sendErrorResponse(res, err);
+    httpResponse.sendErrorResponse(res, err);
   }
 });
 
@@ -54,14 +54,14 @@ router.post('/', check.checkJwt, async (req, res) => {
       .status(201)
       .json(
         httpResponse.sendSuccessResponse(
-          'Event successfully created.',
+          'Event successfully created!',
           data,
           res.statusCode
         )
       );
   } catch (err) {
     console.log(err);
-    // httpResponse.sendErrorResponse(res, err);
+    httpResponse.sendErrorResponse(res, err);
   }
 });
 
@@ -72,14 +72,14 @@ router.get('/:eventId', async (req, res) => {
       .status(200)
       .json(
         httpResponse.sendSuccessResponse(
-          'Event successfully retrieved.',
+          'Event successfully retrieved!',
           data,
           res.statusCode
         )
       );
   } catch (err) {
     console.log(err);
-    // httpResponse.sendErrorResponse(res, err);
+    httpResponse.sendErrorResponse(res, err);
   }
 });
 
@@ -90,14 +90,14 @@ router.patch('/:eventId', check.checkJwt, async (req, res) => {
       .status(200)
       .json(
         httpResponse.sendSuccessResponse(
-          'Event successfully updated.',
+          'Event successfully updated!',
           data,
           res.statusCode
         )
       );
   } catch (err) {
     console.log(err);
-    // httpResponse.sendErrorResponse(res, err);
+    httpResponse.sendErrorResponse(res, err);
   }
 });
 
@@ -108,14 +108,14 @@ router.delete('/:eventId', check.checkJwt, async (req, res) => {
       .status(200)
       .json(
         httpResponse.sendSuccessResponse(
-          'Event successfully deleted.',
+          'Event successfully deleted!',
           data,
           res.statusCode
         )
       );
   } catch (err) {
     console.log(err);
-    // httpResponse.sendErrorResponse(res, err);
+    httpResponse.sendErrorResponse(res, err);
   }
 });
 
