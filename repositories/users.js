@@ -17,6 +17,8 @@ const get = async (userId) => {
     const { data } = await axios.request(opts);
     return {
       name: data.name,
+      given_name: data.given_name,
+      family_name: data.family_name,
       email: data.email,
       picture: data.picture,
       createdAt: data.created_at,
@@ -43,6 +45,8 @@ const update = async (userId, updatedInfo) => {
     const { data } = await axios.request(opts);
     return {
       name: data.name,
+      given_name: data.given_name,
+      family_name: data.family_name,
       email: data.email,
       picture: data.picture,
       createdAt: data.created_at,
