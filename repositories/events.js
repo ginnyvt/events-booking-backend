@@ -90,7 +90,7 @@ listMyEvents = async (currentUser) => {
     return await db
       .collection('events')
       .find({ createdBy: currentUser })
-      .sort({ startTime: 1 })
+      .sort({ startTime: -1 })
       .toArray();
   } catch (err) {
     throw createError(500, err.message);

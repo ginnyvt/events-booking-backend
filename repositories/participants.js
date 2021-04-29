@@ -34,7 +34,8 @@ const findParticipant = async (userId, eventId) => {
   try {
     const result = await db
       .collection('participants')
-      .findOne({ $and: [{ eventId: eventId }, { userId: userId }] });
+      .find({ $and: [{ eventId: eventId }, { userId: userId }] })
+      .toArray();
     return result;
   } catch (err) {
     throw createError(500, err.message);
@@ -42,24 +43,24 @@ const findParticipant = async (userId, eventId) => {
 };
 
 const update = async (updateRegistration) => {
-  const insertingObj = { _id: updateRegistration.id, ...updateRegistration };
-  delete insertingObj.id;
+  const id = updateRegistration._id;
+  delete updateRegistration._id;
 
   const db = await mongoConnect.connectdb();
   try {
     await db.collection('participants').updateOne(
-      { _id: insertingObj._id },
+      { _id: id },
       {
-        $set: { ...insertingObj },
+        $set: { ...updateRegistration },
       }
     );
-    return insertingObj;
+    return updateRegistration;
   } catch (err) {
     throw createError(500, err.message);
   }
 };
 
-const listJoinedParticipants = async (eventId) => {
+const listParticipants = async (eventId) => {
   const db = await mongoConnect.connectdb();
   try {
     const result = await db
@@ -77,5 +78,5 @@ module.exports = {
   countParticipants,
   findParticipant,
   update,
-  listJoinedParticipants,
+  listParticipants,
 };

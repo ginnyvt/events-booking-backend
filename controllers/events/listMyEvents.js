@@ -1,4 +1,4 @@
-const listMyEventsUc = require('../../usecase/events/listEvents');
+const listMyEventsUc = require('../../usecase/events/listMyEvents');
 const createError = require('http-errors');
 
 const invoke = async (req) => {
