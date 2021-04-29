@@ -22,6 +22,10 @@ const insert = async (subscriber) => {
 };
 
 const sendCreatedEventEmail = async (eventInfo) => {
+  let minute = dayjs(eventInfo.time).get('minute');
+  if (minute === 0) {
+    minute = '00';
+  }
   const data = {
     from: `noreply <wynny.me@gmail.com>`,
     to: subscriberList,
@@ -34,7 +38,8 @@ const sendCreatedEventEmail = async (eventInfo) => {
       month: monthNames[dayjs(eventInfo.time).get('month')],
       day: dayjs(eventInfo.time).get('date'),
       hour: dayjs(eventInfo.time).get('hour'),
-      minute: dayjs(eventInfo.time).get('minute'),
+      // minute: dayjs(eventInfo.time).get('minute'),
+      minute: minute,
     }),
   };
 
@@ -70,6 +75,10 @@ const sendUpdatedEventEmail = async (joinedParticipantsList, _id) => {
         title: event.title,
       });
     } else {
+      let minute = dayjs(event.startTime).get('minute');
+      if (minute === 0) {
+        minute = '00';
+      }
       data.subject = `Event is cancelled`;
       data.template = 'cancelled-event';
       data['h:X-Mailgun-Variables'] = JSON.stringify({
@@ -79,7 +88,8 @@ const sendUpdatedEventEmail = async (joinedParticipantsList, _id) => {
         month: monthNames[dayjs(event.startTime).get('month')],
         day: dayjs(event.startTime).get('date'),
         hour: dayjs(event.startTime).get('hour'),
-        minute: dayjs(event.startTime).get('minute'),
+        // minute: dayjs(event.startTime).get('minute'),
+        minute: minute,
       });
     }
     try {
