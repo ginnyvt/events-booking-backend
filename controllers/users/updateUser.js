@@ -5,12 +5,24 @@ const invoke = async (req) => {
   const userId = req.user.sub;
   const updatedUserDto = { ...req.body };
 
+  if (
+    req.body.given_name === '' &&
+    req.body.family_name === '' &&
+    req.body.email === ''
+  ) {
+    throw createError(400, 'Invalid input!');
+  }
+
   if (req.body.given_name === '') {
-    throw createError(400, 'First name is required!');
+    delete updatedUserDto.given_name;
   }
 
   if (req.body.family_name === '') {
-    throw createError(400, 'Last name is required!');
+    delete updatedUserDto.family_name;
+  }
+
+  if (req.body.email === '') {
+    delete updatedUserDto.email;
   }
 
   return await updateUserUc.handle(userId, updatedUserDto);
