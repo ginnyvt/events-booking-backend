@@ -27,7 +27,7 @@ const sendCreatedEventEmail = async (eventInfo) => {
     minute = '00';
   }
   const data = {
-    from: `noreply <wynny.me@gmail.com>`,
+    from: `noreply <noreply@gofor.games>`,
     to: subscriberList,
     subject: `${eventInfo.title}`,
     template: 'newly-event-created',
@@ -63,7 +63,7 @@ const sendUpdatedEventEmail = async (joinedParticipantsList, _id) => {
 
   participantEmails.forEach(async (email) => {
     let data = {
-      from: `noreply <wynny.me@gmail.com>`,
+      from: `noreply <noreply@gofor.games>`,
       to: email,
     };
 
