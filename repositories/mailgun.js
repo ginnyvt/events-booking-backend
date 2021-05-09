@@ -9,7 +9,11 @@ const monthNames = require('../utils/monthNames');
 const DOMAIN = process.env.MAILGUN_DOMAIN;
 const MAILGUN_API = process.env.MAILGUN_API;
 
-const mg = mailgun({ apiKey: MAILGUN_API, domain: DOMAIN });
+const mg = mailgun({
+  apiKey: MAILGUN_API,
+  domain: DOMAIN,
+  host: 'api.eu.mailgun.net',
+});
 const subscriberList = `subscribers@${DOMAIN}`;
 
 const insert = async (subscriber) => {
