@@ -4,9 +4,7 @@ const mailgunRepo = require('../repositories/mailgun');
 class SendUpdatedEventEmail {
   async receive(updatedEvent) {
     const _id = updatedEvent.getId();
-    const joinedParticipantsList = await participantRepo.listJoinedParticipants(
-      _id
-    );
+    const joinedParticipantsList = await participantRepo.listParticipants(_id);
 
     return mailgunRepo.sendUpdatedEventEmail(joinedParticipantsList, _id);
   }
