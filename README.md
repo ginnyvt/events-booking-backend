@@ -2,7 +2,7 @@
 
 > Full stack MERN application built for members to host and manage their events. 
 
-This is a Node/Express/MongoDB REST API that applies Clean Architecture and Design Pattern for building scalable and maintainable application. The application also ulitilizes Mailgun for mailing services and Auth0 for authentication. The application can be found [here](https://verify-students-frontend.herokuapp.com/)
+This is a Node/Express/MongoDB REST API that applies Clean Architecture and Design Pattern for building scalable and maintainable application. The application also ulitilizes Mailgun for mailing services and Auth0 for authentication. The application can be found [here](https://gofor.games/)
 
 
 # Usage
